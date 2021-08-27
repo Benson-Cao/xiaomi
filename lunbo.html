@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轮播</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        div{
+            width: 992px;
+            height: 460px;
+            /* border-color: aqua; */
+            overflow: hidden;
+            position: relative;
+            top: 100px;
+            left: 100px;
+        }
+        div>ul>li{
+            /* 所有的图片都堆叠在一起 */
+            position: absolute;
+            width: 500%;
+            height: 460px;
+            /* display: flex; */
+            
+        }
+        li{
+            list-style: none;
+            display: inline-block;
+        }
+        div>ul>li>img{
+            width: 992px;
+            height: 460px;
+            opacity: 0;
+            transition: all 0.2s;
+        }
+
+        div>button{
+            width: 60px;
+            height: 60px;
+            outline: none;
+            border: none;
+            background-color: rgba(250, 151, 151, 0.356);
+            color: #0e11f7;
+            opacity: 0;
+            z-index: 999;
+        }
+        .prev{
+            position: absolute;
+            top: 200px;
+        }
+        .next{
+            position: absolute;
+            top: 200px;
+            right: 0;
+        }
+        ol{
+            position: absolute;
+            bottom: 5px;
+            left: 446px;
+            display: block;
+            width: 200px;
+            text-align: center;
+            display: flex;
+        }
+        ol>li{
+            list-style-type: disc;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            margin-left: 5px;
+            padding: 5px;
+            background-color: #666;
+            cursor: pointer;
+        }
+        .change{
+            opacity: 1;
+        }
+        .brown{
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <button class="prev"><</button>
+        <button class="next">></button>
+
+        <ul>
+            <li><img src="./images/41fc2ad85864c19cc37a509ff1fb7685.jpg" alt=""></li>
+            <li><img src="./images/020d90ac8cb186b1ff61c98f0dbebdfd.jpg" alt=""></li>
+            <li><img src="./images/a5ebb3ecd10ba5b5f1fa25125d034492.jpg" alt=""></li>
+            <li> <img src="./images/175b22f0032803f8bdbd94590c8c6629.jpeg" alt=""></li>
+            <!-- <li><img src="./images/41fc2ad85864c19cc37a509ff1fb7685.jpg" alt=""></li> -->
+        </ul>
+
+        <ol>
+        </ol>
+    </div>
+</body>
+<script>
+    var div=document.querySelector('div');
+    var prev=document.querySelector('.prev');
+    var next=document.querySelector('.next');
+
+    var ul=document.querySelector('ul');
+    var lis= document.querySelectorAll('li');
+    // console.log(lis[0].children[0]);
+    var ol= document.querySelector('ol');
+
+    // 鼠标进入，两个按钮出现
+    div.addEventListener('mouseover',()=>{
+        clearInterval(timer);
+        prev.style.opacity=1;
+        next.style.opacity=1;
+    })
+    // 鼠标离开，两个按钮消失
+    div.addEventListener('mouseout',()=>{
+        timer=setInterval(goNext, 2000)
+        prev.style.opacity=0;
+        next.style.opacity=0;
+    })
+
+    // 根据图片数量添加小圆点
+    for(let i=0; i<lis.length; i++){
+        var li=document.createElement('li');
+        li.setAttribute('data-index',i);
+        ol.appendChild(li);
+    }
+    // 获取小圆点
+    var olis=ol.querySelectorAll('li');
+    // console.log(olis);
+    // index作为图片和小圆点的下标，首先把图片和小圆点做第一个显示
+    var index=0;
+    lis[0].children[0].className='change';
+    olis[0].className='brown'
+
+    //改变图片 index 对应的图片和小圆点 添加类名
+    var change=function(){
+        lis[index].children[0].className='change';
+        olis[index].className='brown';
+        console.log(lis[index].children[0]);
+    }
+    // goNext函数 下一张图片
+    var goNext=function(){
+        index++;
+        // console.log(index);
+        clear();
+        if(index>4){
+            index=0;
+        }
+        change();
+    }
+
+    // 清楚类名函数
+    var clear=function(){
+        for(let i=0; i<lis.length; i++){
+            lis[i].children[0].className='';
+            olis[i].className='';
+            // console.log('object');
+        }
+    }
+
+    //点击next 切换到下一张图片
+    next.addEventListener('click', ()=>{
+        goNext();
+    })
+    // 点击prev 返回到上一张图片
+    prev.addEventListener('click', ()=>{
+        index--;
+        clear();
+        if(index<0){
+            index=0;
+        }
+        change();
+    })
+
+    // 点击圆点，切换对应图片
+    for(let i=0; i<olis.length; i++){
+        olis[i].addEventListener('click', ()=>{
+            clean();
+            index=this.getAttribute('data-index');
+            change();
+        })
+    }
+    // d定时器 2秒切换下张图片
+    var timer=setInterval(goNext,2000);
+</script>
+</html>
